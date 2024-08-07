@@ -901,7 +901,7 @@ export const BuiltinFuncs = function() {
 
   this.__Porffor_allocateBytes = {
     params: [ Valtype.i32 ],
-    locals: [],
+    locals: [ Valtype.i32 ],
     globals: [ Valtype.i32, Valtype.i32 ],
     globalNames: [ 'currentPtr', 'bytesWritten' ],
     globalInits: [ 0, pageSize ], // init to pageSize so we always allocate on first call
@@ -941,12 +941,13 @@ export const BuiltinFuncs = function() {
       [ Opcodes.else ],
         // else, currentPtr += bytesToAllocate
         [ Opcodes.global_get, 0 ],
+        [ Opcodes.local_tee, 1 ], // oldPtrTemp
         [ Opcodes.local_get, 0 ],
         [ Opcodes.i32_add ],
         [ Opcodes.global_set, 0 ],
 
-        // return currentPtr
-        [ Opcodes.global_get, 0 ],
+        // return oldPtrTemp
+        [ Opcodes.local_get, 1 ],
       [ Opcodes.end ]
     ]
   };
